@@ -13,7 +13,7 @@ export default function Home() {
   }, []);
 
   const { messages, input, handleInputChange, handleSubmit, isLoading, stop } = useChat({
-    api: "api/genai",
+    api: "/api/genai",
   });
 
   const [interaction, setInteraction] = useState(false);
@@ -23,7 +23,7 @@ export default function Home() {
   };
 
   if (!isClient) {
-    return null; // Render nothing or a loading state while client-side code is initializing
+    return null;
   }
 
   return (
