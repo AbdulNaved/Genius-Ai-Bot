@@ -1,9 +1,10 @@
 "use client";
-import { useChat } from "ai/react";
-import { useEffect, useState } from "react";
-import Messages from "./component/messages";
-import InputForm from "./component/inputForm";
 
+import { useChat } from "ai/react";
+import { useState } from "react";
+import Messages from "./component/messages";
+import InputForm from "./component/inputForm"; 
+// update 
 export default function Home() {
   const { messages, input, handleInputChange, handleSubmit, isLoading, stop } = useChat({
     api: "api/genai",
@@ -37,4 +38,3 @@ export default function Home() {
     </main>
   );
 }
-
