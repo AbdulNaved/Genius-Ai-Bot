@@ -1,12 +1,19 @@
 "use client";
+
 import { useChat } from "ai/react";
 import { useEffect, useState } from "react";
 import Messages from "./component/messages";
 import InputForm from "./component/inputForm";
 
 export default function Home() {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   const { messages, input, handleInputChange, handleSubmit, isLoading, stop } = useChat({
-    api: "api/genai",
+    api: "/api/genai",
   });
 
   const [interaction, setInteraction] = useState(false);
@@ -14,6 +21,10 @@ export default function Home() {
   const handleInteraction = () => {
     setInteraction(true);
   };
+
+  if (!isClient) {
+    return null;
+  }
 
   return (
     <main className="flex flex-col min-h-screen p-8 bg-[#111827]">
@@ -37,4 +48,3 @@ export default function Home() {
     </main>
   );
 }
-
