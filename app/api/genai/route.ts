@@ -1,3 +1,4 @@
+
 import { StreamingTextResponse, GoogleGenerativeAIStream, Message } from "ai";
 import { GoogleGenerativeAI, Content } from "@google/generative-ai";
 // IMPORTANT! Set the runtime to edge
