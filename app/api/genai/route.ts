@@ -1,121 +1,66 @@
 import { StreamingTextResponse, GoogleGenerativeAIStream, Message } from "ai";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenerativeAI, Content } from "@google/generative-ai";
 
 // IMPORTANT! Set the runtime to edge
 export const runtime = "edge";
 
 export async function POST(req: Request) {
-  const reqBody = await req.json();
-  
-  // Safely access images, defaulting to an empty array if undefined
-  const images: string[] = reqBody.data?.images ? JSON.parse(reqBody.data.images) : [];
-  const imageParts = filesArrayToGenerativeParts(images);
-  const messages: Message[] = reqBody.messages;
+  try {
+    const reqBody = await req.json();
+    const images: string[] = reqBody.data?.images ? JSON.parse(reqBody.data.images) : [];
+    const imageParts = filesArrayToGenerativeParts(images);
+    const messages: Message[] = reqBody.messages;
 
-  let modelName: string;
-  let promptWithParts: any;
+    let modelName: string;
+    let promptWithParts: any;
 
-  if (imageParts.length > 0) {
-    modelName = "gemini-1.5-flash";
-    const prompt = [...messages].filter((message) => message.role === "user").pop()?.content;
-    console.log(prompt);
-    promptWithParts = [prompt, ...imageParts];
-  } else {
-    modelName = "gemini-pro";
-    promptWithParts = buildGoogleGenAIPrompt(messages);
+    if (imageParts.length > 0) {
+      modelName = "gemini-1.5-flash"; // Use flash model for images
+      const prompt = messages.filter((msg) => msg.role === "user").pop()?.content || "";
+      promptWithParts = [prompt, ...imageParts];
+    } else {
+      modelName = "gemini-1.5-pro-latest"; // Use latest text model
+      promptWithParts = buildGoogleGenAIPrompt(messages);
+    }
+
+    // Initialize Generative AI
+    const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY!);
+    const model = genAI.getGenerativeModel({ model: modelName });
+
+    console.log("MODEL NAME:", modelName);
+    console.log("PROMPT WITH PARTS:", promptWithParts);
+
+    const streamingResponse = await model.generateContentStream({ contents: promptWithParts });
+
+    return new StreamingTextResponse(GoogleGenerativeAIStream(streamingResponse));
+
+  } catch (error) {
+    console.error("API Error:", error);
+    return new Response(JSON.stringify({ error: "Internal Server Error" }), { status: 500 });
   }
-
-  const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY!);
-  const model = genAI.getGenerativeModel({ model: modelName });
-
-  console.log("MODELNAME: " + modelName);
-  console.log("PROMPT WITH PARTS: ");
-  console.log(promptWithParts);
-  
-  const streamingResponse = await model.generateContentStream(promptWithParts);
-  return new StreamingTextResponse(GoogleGenerativeAIStream(streamingResponse));
 }
 
+// Helper function to format text prompts
 function buildGoogleGenAIPrompt(messages: Message[]) {
-  return {
-    contents: messages
-      .filter((message) => message.role === "user" || message.role === "assistant")
-      .map((message) => ({
-        role: message.role === "user" ? "user" : "model",
-        parts: [{ text: message.content }],
-      })),
-  };
+  return messages
+    .filter((msg) => msg.role === "user" || msg.role === "assistant")
+    .map((msg) => ({
+      role: msg.role === "user" ? "user" : "model",
+      parts: [{ text: msg.content }],
+    }));
 }
 
+// Helper function to process images
 function filesArrayToGenerativeParts(images: string[]) {
-  return images.map((imageData) => ({
-    inlineData: {
-      data: imageData.split(",")[1],
-      mimeType: imageData.substring(imageData.indexOf(":") + 1, imageData.lastIndexOf(";")),
-    },
-  }));
+  return images.map((imageData) => {
+    const base64Data = imageData.split(",")[1] || "";
+    const mimeType = imageData.match(/data:(.*?);base64/)?.[1] || "image/png";
+
+    return {
+      inlineData: {
+        data: base64Data,
+        mimeType: mimeType,
+      },
+    };
+  });
 }
-
-
-// import { StreamingTextResponse, GoogleGenerativeAIStream, Message } from "ai";
-// import { GoogleGenerativeAI, Content } from "@google/generative-ai";
-// // IMPORTANT! Set the runtime to edge
-// export const runtime = "edge";
-// export async function POST(req: Request, res: Response) {
-//   const reqBody = await req.json();
-//   const images: string[] = JSON.parse(reqBody.data.images);
-//   const imageParts = filesArrayToGenerativeParts(images);
-//   const messages: Message[] = reqBody.messages;
-//   // if imageparts exist then take the last user message as prompt
-//   let modelName: string;
-//   let promptWithParts: any;
-//   if (imageParts.length > 0) {
-//     modelName = "gemini-1.5-flash";
-//     const prompt = 
-//     [...messages]
-//       .filter((message) => message.role === "user")
-//       .pop()?.content;
-//     console.log(prompt);
-//     promptWithParts = [prompt, ...imageParts];
-//   } else {
-//     // else build the multi-turn chat prompt
-//     modelName = "gemini-pro";
-//     promptWithParts = buildGoogleGenAIPrompt(messages);
-//   }
-
-//   const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY!);
-//   const model = genAI.getGenerativeModel({
-//     model: modelName,
-//   });
-
-//   console.log("MODELNAME: " + modelName);
-//   console.log("PROMPT WITH PARTS: ");
-//   console.log(promptWithParts);
-//   const streamingResponse = await model.generateContentStream(promptWithParts);
-//   return new StreamingTextResponse(GoogleGenerativeAIStream(streamingResponse));
-// }
-
-// function buildGoogleGenAIPrompt(messages: Message[]) {
-//   return {
-//     contents: messages
-//       .filter(
-//         (message) => message.role === "user" || message.role === "assistant"
-//       )
-//       .map((message) => ({
-//         role: message.role === "user" ? "user" : "model",
-//         parts: [{ text: message.content }],
-//       })),
-//   };
-// }
-
-// function filesArrayToGenerativeParts(images: string[]) {
-//   return images.map((imageData) => ({
-//     inlineData: {
-//       data: imageData.split(",")[1],
-//       mimeType: imageData.substring(
-//         imageData.indexOf(":") + 1,
-//         imageData.lastIndexOf(";")
-//       ),
-//     },
-//   }));
-// }
