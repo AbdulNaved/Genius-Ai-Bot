@@ -1,4 +1,4 @@
-// correct 
+// correct
 
 import { type ClassValue, clsx } from "clsx";
 import mongoose from "mongoose";
@@ -18,7 +18,13 @@ export const connectToDatabase = async () => {
       return;
     }
 
-    const { connection } = await mongoose.connect(process.env.MONGO_URL as string, {
+    const mongoUrl = process.env.MONGO_URL;
+    if (!mongoUrl) {
+      console.error("MONGO_URL is not set");
+      throw new Error("MONGO_URL is not configured");
+    }
+
+    const { connection } = await mongoose.connect(mongoUrl, {
       dbName: "nextAuth",
     });
 

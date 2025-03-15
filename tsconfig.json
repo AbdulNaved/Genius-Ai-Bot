@@ -18,7 +18,7 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./src/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/profile/page.jsx", "app/profile/[id]/page.jsx", "app/verifyemail/page.jsx", "app/login/page.jsx", "components/client/form.jsx", "app/signup/page.jsx", "app/api/auth/[...nextauth]", "app/component/inputForm.tsx"],

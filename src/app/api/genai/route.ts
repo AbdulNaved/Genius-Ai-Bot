@@ -7,7 +7,9 @@ export const runtime = "edge";
 export async function POST(req: Request) {
   try {
     const reqBody = await req.json();
-    const images: string[] = reqBody.data?.images ? JSON.parse(reqBody.data.images) : [];
+    const images: string[] = reqBody.data?.images
+      ? JSON.parse(reqBody.data.images)
+      : [];
     const imageParts = filesArrayToGenerativeParts(images);
     const messages: Message[] = reqBody.messages;
 
@@ -16,7 +18,8 @@ export async function POST(req: Request) {
 
     if (imageParts.length > 0) {
       modelName = "gemini-1.5-flash"; // Use flash model for images
-      const prompt = messages.filter((msg) => msg.role === "user").pop()?.content || "";
+      const prompt =
+        messages.filter((msg) => msg.role === "user").pop()?.content || "";
       promptWithParts = [prompt, ...imageParts];
     } else {
       modelName = "gemini-1.5-pro-latest"; // Use latest text model
@@ -24,19 +27,31 @@ export async function POST(req: Request) {
     }
 
     // Initialize Generative AI
-    const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY!);
+    const apiKey = process.env.GOOGLE_API_KEY || "";
+    if (!apiKey) {
+      console.error("GOOGLE_API_KEY is not set");
+      return new Response(JSON.stringify({ error: "API key not configured" }), {
+        status: 500,
+      });
+    }
+    const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: modelName });
 
     console.log("MODEL NAME:", modelName);
     console.log("PROMPT WITH PARTS:", promptWithParts);
 
-    const streamingResponse = await model.generateContentStream({ contents: promptWithParts });
+    const streamingResponse = await model.generateContentStream({
+      contents: promptWithParts,
+    });
 
-    return new StreamingTextResponse(GoogleGenerativeAIStream(streamingResponse));
-
+    return new StreamingTextResponse(
+      GoogleGenerativeAIStream(streamingResponse),
+    );
   } catch (error) {
     console.error("API Error:", error);
-    return new Response(JSON.stringify({ error: "Internal Server Error" }), { status: 500 });
+    return new Response(JSON.stringify({ error: "Internal Server Error" }), {
+      status: 500,
+    });
   }
 }
 
