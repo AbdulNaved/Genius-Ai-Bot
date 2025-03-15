@@ -1,8 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
-import { GiHamburgerMenu } from "react-icons/gi";
+import {
+  Menu,
+  User,
+  LogOut,
+  LogIn,
+  UserPlus,
+  BrainCircuit,
+} from "lucide-react";
 import Avatar from "react-avatar";
-import { PiSignOutBold } from "react-icons/pi";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 type NavBarProps = {
   setAsideOpen: (isOpen: boolean) => void;
@@ -41,55 +48,81 @@ const NavBar = ({ setAsideOpen }: NavBarProps) => {
   }, []);
 
   return (
-    <nav className="text-white sticky top-0 left-0 right-0 z-50 shadow-md flex justify-between items-center h-16 px-6 bg-customDark border-b border-gray-800">
+    <nav className="text-white sticky top-0 left-0 right-0 z-50 shadow-lg flex justify-between items-center h-16 px-4 md:px-6 bg-customDark border-b border-gray-800 backdrop-blur-sm bg-opacity-90">
       <div className="flex items-center space-x-4">
-        <div className="flex items-center">
-          <GiHamburgerMenu
-            size={24}
-            className="hover:bg-gray-700 p-1 rounded cursor-pointer transition-colors duration-200"
-            onClick={toggleAside}
-          />
-          <h1 className="ml-4 text-xl font-semibold hidden sm:block">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={toggleAside}
+          className="text-white hover:bg-gray-700 hover:text-blue-400 transition-all duration-300 ease-in-out"
+        >
+          <Menu className="h-5 w-5" />
+          <span className="sr-only">Toggle menu</span>
+        </Button>
+
+        <div className="flex items-center gap-2">
+          <BrainCircuit className="h-6 w-6 text-blue-500 animate-pulse" />
+          <h1 className="text-xl font-bold hidden sm:block bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
             Genius AI
           </h1>
         </div>
       </div>
+
       <div className="relative" ref={dropdownRef}>
-        <Avatar
-          size="40"
-          className="rounded-full cursor-pointer border-2 border-gray-700 hover:border-blue-500 transition-all duration-200"
-          src="https://api.dicebear.com/7.x/avataaars/svg?seed=genius"
+        <Button
+          variant="ghost"
+          size="icon"
           onClick={toggleDropdown}
-        />
+          className="rounded-full p-0 h-10 w-10 overflow-hidden border-2 border-gray-700 hover:border-blue-500 transition-all duration-300 ease-in-out"
+        >
+          <Avatar
+            size="40"
+            className="rounded-full"
+            src="https://api.dicebear.com/7.x/avataaars/svg?seed=genius"
+          />
+          <span className="sr-only">Open user menu</span>
+        </Button>
+
         {isDropdownOpen && (
-          <div className="absolute right-0 mt-2 w-56 bg-gray-900 rounded-lg shadow-lg z-10 border border-gray-800 animate-fade-in">
+          <div className="absolute right-0 mt-2 w-64 bg-gray-900/95 backdrop-blur-sm rounded-xl shadow-xl z-10 border border-gray-800 animate-in fade-in-50 slide-in-from-top-5 duration-300">
             <div className="flex justify-center items-center mt-4 py-2">
-              <Avatar
-                size="70"
-                className="rounded-full border-2 border-blue-500"
-                src="https://api.dicebear.com/7.x/avataaars/svg?seed=genius"
-              />
+              <div className="relative">
+                <div className="absolute inset-0 bg-blue-500 opacity-20 rounded-full blur-md"></div>
+                <Avatar
+                  size="80"
+                  className="rounded-full border-2 border-blue-500 relative z-10"
+                  src="https://api.dicebear.com/7.x/avataaars/svg?seed=genius"
+                />
+              </div>
             </div>
+
             <div className="py-3 px-4">
-              <p className="flex justify-center text-xl font-medium mb-3 text-white">
-                Hello 🙌
+              <p className="flex justify-center text-xl font-medium mb-4 text-white">
+                Hello <span className="animate-bounce mx-1">🙌</span>
               </p>
+
               <div className="space-y-2">
-                <Link
-                  href="/login"
-                  className="block w-full px-4 py-2 text-center rounded-md bg-gray-800 hover:bg-gray-700 transition-colors duration-200"
-                >
-                  Login
+                <Link href="/login" className="w-full">
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start bg-gray-800 border-gray-700 hover:bg-gray-700 hover:text-blue-400 text-white transition-all duration-300"
+                  >
+                    <LogIn className="mr-2 h-4 w-4" /> Login
+                  </Button>
                 </Link>
-                <Link
-                  href="/signup"
-                  className="block w-full px-4 py-2 text-center rounded-md bg-blue-600 hover:bg-blue-700 transition-colors duration-200"
-                >
-                  Sign Up
+
+                <Link href="/signup" className="w-full">
+                  <Button className="w-full justify-start bg-blue-600 hover:bg-blue-700 text-white transition-all duration-300">
+                    <UserPlus className="mr-2 h-4 w-4" /> Sign Up
+                  </Button>
                 </Link>
-                <button className="w-full mt-3 px-4 py-2 flex justify-center items-center rounded-md hover:bg-gray-800 text-gray-300 transition-colors duration-200">
-                  <PiSignOutBold size={18} className="mr-2" /> Sign Out
-                </button>
+
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start mt-3 text-gray-300 hover:bg-gray-800 hover:text-white transition-all duration-300"
+                >
+                  <LogOut className="mr-2 h-4 w-4" /> Sign Out
+                </Button>
               </div>
             </div>
           </div>
