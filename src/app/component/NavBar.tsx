@@ -8,7 +8,7 @@ import {
   SunIcon,
   MoonIcon,
 } from "@heroicons/react/24/outline";
-import { BrainIcon } from "@heroicons/react/24/solid";
+import { Brain } from "lucide-react"; // Imported Brain icon from Lucide
 import Avatar from "react-avatar";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -25,13 +25,12 @@ const NavBar = ({ setAsideOpen }: NavBarProps) => {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
-  // After mounting, we can safely show the theme toggle
   useEffect(() => setMounted(true), []);
 
   const toggleAside = () => {
     const newState = !isAsideOpen;
     setAsideOpenState(newState);
-    setAsideOpen(newState); // Update parent state
+    setAsideOpen(newState);
   };
 
   const toggleDropdown = () => {
@@ -42,7 +41,6 @@ const NavBar = ({ setAsideOpen }: NavBarProps) => {
     setTheme(theme === "dark" ? "light" : "dark");
   };
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -73,7 +71,7 @@ const NavBar = ({ setAsideOpen }: NavBarProps) => {
         </Button>
 
         <div className="flex items-center gap-2">
-          <BrainIcon className="h-6 w-6 text-blue-500 animate-pulse" />
+          <Brain className="h-6 w-6 text-blue-500 animate-pulse" /> {/* Brain icon */}
           <h1 className="text-xl font-bold hidden sm:block bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
             Genius AI
           </h1>
