@@ -32,7 +32,11 @@ const Aside = ({ isOpen, history, setHistory }: AsideProps) => {
 
   return (
     <aside
-      className={`mt-16 font-sans text-white dark:text-white fixed top-0 left-0 overflow-hidden shadow-xl transition-all duration-500 ease-in-out ${isOpen ? "w-72 h-screen translate-x-0" : "w-0 h-screen -translate-x-full"}`}
+      className={`mt-16 font-sans text-white dark:text-white fixed top-0 left-0 overflow-hidden shadow-xl transition-all duration-500 ease-in-out ${
+        isOpen
+          ? "w-72 h-screen translate-x-0"
+          : "w-0 h-screen -translate-x-full"
+      }`}
       style={{
         overflowY: "auto",
         background:
@@ -43,7 +47,9 @@ const Aside = ({ isOpen, history, setHistory }: AsideProps) => {
       aria-hidden={!isOpen}
     >
       <div
-        className={`sticky top-0 bg-gray-900/80 dark:bg-gray-900/80 backdrop-blur-sm z-10 border-b border-gray-800 ${isOpen ? "block" : "hidden"}`}
+        className={`sticky top-0 bg-gray-900/80 dark:bg-gray-900/80 backdrop-blur-sm z-10 border-b border-gray-800 ${
+          isOpen ? "block" : "hidden"
+        }`}
       >
         <div className="flex items-center gap-2 p-4">
           <ArchiveBoxIcon className="h-5 w-5 text-blue-500" />
@@ -65,14 +71,22 @@ const Aside = ({ isOpen, history, setHistory }: AsideProps) => {
                   <ChatBubbleLeftRightIcon className="h-4 w-4 text-blue-400 mt-0.5 flex-shrink-0" />
                   <div className="flex-1 overflow-hidden">
                     <p className="text-white dark:text-white font-medium truncate">
-                      {item.text.length > 35
+                      {item.text && item.text.length > 35
                         ? `${item.text.slice(0, 35)}...`
                         : item.text}
                     </p>
                     <div className="flex items-center text-xs text-gray-400 mt-1">
                       <ClockIcon className="h-3 w-3 mr-1" />
                       <span>
-                        {format(new Date(item.timestamp), "MMM d, yyyy h:mm a")}
+                        <span>
+                          {item.timestamp &&
+                          !isNaN(new Date(item.timestamp).getTime())
+                            ? format(
+                                new Date(item.timestamp),
+                                "MMM d, yyyy h:mm a"
+                              )
+                            : "Date Unknown"}
+                        </span>
                       </span>
                     </div>
                   </div>
