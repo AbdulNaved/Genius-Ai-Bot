@@ -28,4 +28,3 @@ const CopyButton = ({ text }: Props) => {
 };
 
 export default CopyButton;
-

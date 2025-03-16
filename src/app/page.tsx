@@ -15,7 +15,7 @@ export default function Home() {
   const [isAsideOpen, setAsideOpen] = useState(false);
 
   // Initialize `history` from localStorage only if on the client
-  const [history, setHistory] = useState<string[]>(() => {
+  const [history, setHistory] = useState<any[]>(() => {
     if (localStorageService.isBrowser()) {
       return localStorageService.getHistory();
     }
@@ -63,7 +63,11 @@ export default function Home() {
     if (!input.trim()) return;
 
     setHistory((prevHistory) => {
-      const updatedHistory = [...prevHistory, input];
+      const newItem = {
+        text: input,
+        timestamp: new Date().toISOString(),
+      };
+      const updatedHistory = [...prevHistory, newItem];
       localStorageService.saveHistory(updatedHistory);
       return updatedHistory;
     });
@@ -74,11 +78,11 @@ export default function Home() {
   }
 
   return (
-    <div className="relative min-h-screen bg-customDark text-white">
+    <div className="relative min-h-screen bg-customDark dark:bg-gray-900 text-white dark:text-white">
       <NavBar setAsideOpen={setAsideOpen} />
-      <Aside isOpen={isAsideOpen} history={history} />
+      <Aside isOpen={isAsideOpen} history={history} setHistory={setHistory} />
       <main
-        className={`flex flex-col min-h-screen pt-16 pb-24 transition-all duration-300 ${isAsideOpen ? "ml-64" : "ml-0"}`}
+        className={`flex flex-col min-h-screen pt-16 pb-24 transition-all duration-300 ${isAsideOpen ? "ml-72" : "ml-0"}`}
       >
         <div className="flex-grow overflow-auto px-4 md:px-8 py-6">
           <Messages

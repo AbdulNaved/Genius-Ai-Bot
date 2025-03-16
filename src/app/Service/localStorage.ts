@@ -1,10 +1,10 @@
-const MESSAGES_KEY = 'messages';
-const HISTORY_KEY = 'history';
+const MESSAGES_KEY = "messages";
+const HISTORY_KEY = "history";
 
 const localStorageService = {
   // Check if we're running in a browser environment
   isBrowser() {
-    return typeof window !== 'undefined';
+    return typeof window !== "undefined";
   },
 
   // Get stored messages from localStorage (client-side only)
@@ -12,12 +12,12 @@ const localStorageService = {
     if (!this.isBrowser()) return [];
 
     const messages = localStorage.getItem(MESSAGES_KEY);
-    
+
     // Safely parse the JSON only if `messages` is not null or undefined
     try {
       return messages ? JSON.parse(messages) : [];
     } catch (error) {
-      console.error('Error parsing messages from localStorage:', error);
+      console.error("Error parsing messages from localStorage:", error);
       return [];
     }
   },
@@ -41,18 +41,18 @@ const localStorageService = {
     if (!this.isBrowser()) return [];
 
     const history = localStorage.getItem(HISTORY_KEY);
-    
+
     // Safely parse the JSON only if `history` is not null or undefined
     try {
       return history ? JSON.parse(history) : [];
     } catch (error) {
-      console.error('Error parsing history from localStorage:', error);
+      console.error("Error parsing history from localStorage:", error);
       return [];
     }
   },
 
   // Save history to localStorage (client-side only)
-  saveHistory(history: Array<string>) {
+  saveHistory(history: Array<any>) {
     if (this.isBrowser()) {
       localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
     }
@@ -63,8 +63,7 @@ const localStorageService = {
     if (this.isBrowser()) {
       localStorage.removeItem(HISTORY_KEY);
     }
-  }
+  },
 };
 
 export default localStorageService;
-
