@@ -8,11 +8,20 @@ import NavBar from "./component/NavBar";
 import Aside from "./component/Aside";
 import localStorageService from "./Service/localStorage";
 import { toast } from "sonner";
+import { useAuth } from "./context/authcontext";
 
 export default function Home() {
   const router = useRouter();
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
   const [isClient, setIsClient] = useState(false);
   const [isAsideOpen, setAsideOpen] = useState(false);
+
+  // Check authentication and redirect if not authenticated
+  useEffect(() => {
+    if (isClient && !authLoading && !isAuthenticated) {
+      router.push("/signup");
+    }
+  }, [isAuthenticated, authLoading, isClient, router]);
 
   // Initialize `history` from localStorage only if on the client
   const [history, setHistory] = useState<any[]>(() => {
@@ -73,7 +82,17 @@ export default function Home() {
     });
   };
 
-  if (!isClient) {
+  // Show loading state while checking authentication or if not client-side
+  if (authLoading || !isClient) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-customDark dark:bg-gray-900">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  // If not authenticated, don't render the page (redirect will happen)
+  if (!isAuthenticated) {
     return null;
   }
 

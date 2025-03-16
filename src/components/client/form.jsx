@@ -40,6 +40,10 @@ const LoginForm = () => {
       const data = await response.json();
 
       if (response.ok) {
+        // Store the token in a cookie for middleware authentication
+        document.cookie = `authToken=${data.token}; path=/; max-age=${60 * 60}`; // 1 hour expiry
+        localStorage.setItem("authToken", data.token);
+
         toast.success("Login Successful", { id: toastId });
         // Add a small delay to ensure toast finishes displaying before redirect
         setTimeout(() => {
