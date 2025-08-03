@@ -22,7 +22,7 @@ export async function POST(req: Request) {
         messages.filter((msg) => msg.role === "user").pop()?.content || "";
       promptWithParts = [prompt, ...imageParts];
     } else {
-      modelName = "gemini-1.5-pro-latest"; // Use latest text model
+      modelName = "gemini-1.5-flash"; // Use latest text model
       promptWithParts = buildGoogleGenAIPrompt(messages);
     }
 
