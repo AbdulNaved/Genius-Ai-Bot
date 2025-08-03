@@ -37,9 +37,9 @@ const LoginForm = () => {
       if (response.ok) {
         toast.success("Login Successful", { id: toastId });
         // Add a small delay to ensure toast finishes displaying before redirect
-        setTimeout(() => {
+        
           router.push("/"); // Redirect to homepage after successful login
-        }, 500);
+       
       } else {
         toast.error(data.message || "Login failed", { id: toastId });
       }
