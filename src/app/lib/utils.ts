@@ -2,15 +2,15 @@ import { type ClassValue, clsx } from "clsx";
 import mongoose from "mongoose";
 import { twMerge } from "tailwind-merge";
 
-// Fixing the cn function syntax
-export default function cn(...inputs: ClassValue[]) {
+// Named export for utility class merging function
+export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(...inputs));
 }
 
-// Database connection logic
-export const connectToDatabase = async () => {
+// Named export for MongoDB connection
+export async function connectToDatabase() {
   try {
-    // Check if mongoose is already connected
+    // Avoid multiple connections
     if (mongoose.connection.readyState) {
       console.log("Already connected to the database");
       return;
@@ -28,6 +28,7 @@ export const connectToDatabase = async () => {
 
     console.log(`Connected to database: ${connection.host}`);
   } catch (error) {
+    console.error("Database connection error:", error);
     throw new Error("Error connecting to database");
   }
-};
+}
