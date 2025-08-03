@@ -81,61 +81,6 @@ export default function SignupPage() {
     }
   };
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   setIsLoading(true);
-
-  //   const formData = new FormData(e.currentTarget);
-  //   const name = formData.get("name");
-  //   const email = formData.get("email");
-  //   const password = formData.get("password");
-  //   const confirmPassword = formData.get("confirmPassword");
-
-  //   if (!name || !email || !password || !confirmPassword) {
-  //     setIsLoading(false);
-  //     return toast.error("Please provide all fields");
-  //   }
-
-  //   if (password !== confirmPassword) {
-  //     setIsLoading(false);
-  //     return toast.error("Passwords do not match");
-  //   }
-
-  //   const toastId = toast.loading("Creating your account...");
-
-  //   try {
-  //     const response = await fetch("/api/auth/signup", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({ name, email, password }),
-  //     });
-
-  //     // const data = await response.json();
-  //     const data = await response.json();
-  //     setIsLoading(false);
-
-  //     if (response.ok) {
-  //       toast.success("Account created successfully", { id: toastId });
-  //       setTimeout(() => {
-  //         router.push("/login");
-  //       }, 500);
-  //     } else {
-  //       setIsLoading(false);
-  //       toast.error(data.message || "Failed to create account", {
-  //         id: toastId,
-  //       });
-  //     }
-  //   } catch (error) {
-  //     console.error("Signup error:", error);
-  //     setIsLoading(false);
-  //     toast.error("An error occurred. Please try again later.", {
-  //       id: toastId,
-  //     });
-  //   }
-  // };
-
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-gray-900 to-customDark">
       <Toaster position="top-center" />
